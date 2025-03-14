@@ -5,7 +5,6 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 
 import static java.awt.Component.LEFT_ALIGNMENT;
@@ -15,7 +14,8 @@ public class TaskManager extends JFrame{
     //create a frame (GUI window) and gives it a title
     public void taskManager() {
         Task task = new Task();
-        ArrayList<String> rowData = new ArrayList<String>();
+        ArrayList<String> allRowData = new ArrayList<>();
+        ArrayList<String> rowData = new ArrayList<>();
         //configuration of frame and creation of splitPane, JTable and default table model
         setSize(900, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); //closes window and program when clicking the exit button
@@ -67,7 +67,7 @@ public class TaskManager extends JFrame{
         //input fields
         final JTextField taskInputField = new JTextField(10);
         final JFormattedTextField dateInputField = new JFormattedTextField(10);
-        final JComboBox<String> priorityInputField = new JComboBox<String>(priority_choices);
+        final JComboBox<String> priorityInputField = new JComboBox<>(priority_choices);
 
         //adding and configuration of splitPane
         add(splitPane);
@@ -108,34 +108,43 @@ public class TaskManager extends JFrame{
             if(choice == JFileChooser.APPROVE_OPTION) {
                 File file = fileChooser.getSelectedFile();
                 try(BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
-                    rowData.add(tableModel.getDataVector().toString());
-                    writer.write(String.valueOf(rowData));
+                    int row = 0;
+                    int col = 0;
+                    while (row < tableModel.getRowCount()) {
+                        rowData.add(tableModel.getValueAt(row, col).toString());
+                        rowData.add(tableModel.getValueAt(row,col + 1).toString());
+                        rowData.add(tableModel.getValueAt(row, col + 2).toString());
+                        row += 1;
+                    }
+                    String text = rowData.toString();
+                    writer.write(text);
+
                 } catch (IOException ex) {
                     JOptionPane.showMessageDialog(null, "Error saving file");
                 }
             }
         });
 
-//        //loading a specific file to the text area using the load button
-//        loadTaskFile.addActionListener(e -> {
-//            JFileChooser fileChooser = new JFileChooser();
-//            int choice = fileChooser.showOpenDialog(table);
-//            if(choice == JFileChooser.APPROVE_OPTION) {
-//                File file = fileChooser.getSelectedFile();
-//                try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
-//                    String line = reader.readLine();
-//                    Object[] rowFields = line.split(" ");
-//                    tableModel.addRow(rowFields[0], rowFields[1], rowFields[2]);
-//                } catch (IOException ex) {
-//                    JOptionPane.showMessageDialog(null, "Error loading file");
-//                }
-//            }
-//        });
+        //loading a specific file to the text area using the load button
+        loadTaskFile.addActionListener(e -> {
+            JFileChooser fileChooser = new JFileChooser();
+            int choice = fileChooser.showOpenDialog(table);
+            if(choice == JFileChooser.APPROVE_OPTION) {
+                File file = fileChooser.getSelectedFile();
+                try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+                    rowData.add(reader.readLine());
+                    for(int i = 0; i < rowData.size(); i += 3) {
+                        tableModel.addRow(rowData.get(i), rowData.get(i + 1), rowData.get(i + 2));
+                    }
+                    System.out.println(rowData);
+                } catch (IOException ex) {
+                    JOptionPane.showMessageDialog(null, "Error loading file");
+                }
+            }
+        });
 
         //clearing all tasks from text area
-        clearButton.addActionListener(e -> {
-            tableModel.setRowCount(0);
-        });
+        clearButton.addActionListener(e -> tableModel.setRowCount(0));
 
         //add task to text area
         addTaskButton.addActionListener(e -> {
@@ -149,8 +158,6 @@ public class TaskManager extends JFrame{
         });
 
         //delete selected task
-        deleteTaskButton.addActionListener(e -> {
-            tableModel.removeRow(table.getSelectedRow());
-        });
+        deleteTaskButton.addActionListener(e -> tableModel.removeRow(table.getSelectedRow()));
     }
 }
