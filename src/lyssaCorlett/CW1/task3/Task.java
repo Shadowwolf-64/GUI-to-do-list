@@ -1,38 +1,26 @@
 package lyssaCorlett.CW1.task3;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import javax.swing.*;
 
 public class Task {
-    private String task;
-    private Date dueDate;
-    private String priority;
+    private JTextField task;
+    private JFormattedTextField dueDate;
     private boolean status;
-    final List<Object> data = new ArrayList<>();
 
-    public String getTask() {
+    public JTextField getTask() {
         return task;
     }
 
-    public void setTask(String task) {
+    public void setTask(JTextField task) {
         this.task = task;
     }
 
-    public Date getDueDate() {
+    public JFormattedTextField getDueDate() {
         return dueDate;
     }
 
-    public void setDueDate(Date dueDate) {
+    public void setDueDate(JFormattedTextField dueDate) {
         this.dueDate = dueDate;
-    }
-
-    public String getPriority() {
-        return priority;
-    }
-
-    public void setPriority(String priority) {
-        this.priority = priority;
     }
 
     public boolean isStatus() {

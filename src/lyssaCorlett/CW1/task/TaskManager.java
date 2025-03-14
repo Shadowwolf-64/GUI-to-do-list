@@ -1,4 +1,9 @@
 package lyssaCorlett.CW1.task;
 
-public class TaskManager {
+import javax.swing.*;
+
+public class TaskManager extends InitGUI {
+    public void taskManager() {
+
+    }
 }
