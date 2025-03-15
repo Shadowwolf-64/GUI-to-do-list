@@ -78,7 +78,7 @@ public class TaskManager extends JFrame{
         String[] priority_choices = {"1  Urgent", "2  High", "3  Moderate", "4  Low"};
 
         //setting up the date format for the due date of the task
-        DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 
         //input fields
         final JTextField taskInputField = new JTextField(10);

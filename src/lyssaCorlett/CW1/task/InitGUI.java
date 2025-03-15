@@ -2,8 +2,6 @@ package lyssaCorlett.CW1.task;
 
 
 
-import lyssaCorlett.CW1.task3.Task;
-
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
@@ -15,11 +13,11 @@ import java.util.ArrayList;
 public class InitGUI extends JFrame {
 
     public void initGUI() {
-        TaskManager1 taskManager1 = new TaskManager1();
+        TaskManager taskManager1 = new TaskManager();
 
         ArrayList<Object> rowData = new ArrayList<>();
         //configuration of frame and creation of splitPane, JTable and default table model
-        setSize(900, 600);
+        setSize(1000, 400);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); //closes window and program when clicking the exit button
         setLayout(new GridLayout()); //set layout for proper positioning of components
         JSplitPane splitPane = new JSplitPane();
@@ -43,7 +41,6 @@ public class InitGUI extends JFrame {
         table.getColumnModel().getColumn(2).setCellRenderer(centerRenderer);
         table.getColumnModel().getColumn(3).setCellRenderer(centerRenderer);
 
-
         //panels
         JPanel leftPanel = new JPanel(); //container panel for left half of window
         JPanel rightPanel = new JPanel(); //container for right half of window
@@ -58,7 +55,7 @@ public class InitGUI extends JFrame {
 
         //creating scroll pane for task list and setting size and alignment
         JScrollPane tasksScrollPane = new JScrollPane(table);
-        tasksScrollPane.setPreferredSize(new Dimension(520, 450));
+        tasksScrollPane.setPreferredSize(new Dimension(550, 300));
         tasksScrollPane.setAlignmentX(LEFT_ALIGNMENT);
         table.setFillsViewportHeight(true);
 
@@ -76,11 +73,12 @@ public class InitGUI extends JFrame {
         JButton clearButton = new JButton("CLEAR");
         JButton deleteTaskButton = new JButton("DELETE TASK");
         JButton completedTaskButton = new JButton("Completed");
+        
 
         String[] priority_choices = {"1  Urgent", "2  High", "3  Moderate", "4  Low"};
 
         //setting up the date format for the due date of the task
-        DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 
         //input fields
         final JTextField taskInputField = new JTextField(10);
@@ -91,7 +89,7 @@ public class InitGUI extends JFrame {
         //adding and configuration of splitPane
         add(splitPane);
         splitPane.setOrientation(JSplitPane.HORIZONTAL_SPLIT);
-        splitPane.setDividerLocation(550);
+        splitPane.setDividerLocation(650);
         splitPane.setTopComponent(leftPanel);
         splitPane.setBottomComponent(rightPanel);
 
@@ -103,24 +101,52 @@ public class InitGUI extends JFrame {
         taskPanel.add(tasksScrollPane);
         taskPanel.add(bottomPanel);
 
-        //adding input fields and matching labels to right panel
-        inputPanel.add(newTaskLabel);
-        inputPanel.add(taskInputField);
-        inputPanel.add(newDateLabel);
-        inputPanel.add(dateInputField);
-        inputPanel.add(newPriorityLabel);
-        inputPanel.add(priorityInputField);
+        //organising the layout of the components in the input panel
+        GridBagLayout layout = new GridBagLayout();
+        inputPanel.setLayout(layout);
+        GridBagConstraints gbc = new GridBagConstraints();
+
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        //positions task, due date and priority labels and input boxes
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        inputPanel.add((newTaskLabel), gbc);
+        gbc.gridx = 1;
+        gbc.gridy = 0;
+        inputPanel.add((taskInputField), gbc);
+
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        inputPanel.add((newDateLabel), gbc);
+        gbc.gridx = 1;
+        gbc.gridy = 1;
+        inputPanel.add((dateInputField), gbc);
+
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        inputPanel.add((newPriorityLabel), gbc);
+        gbc.gridx = 1;
+        gbc.gridy = 2;
+        inputPanel.add((priorityInputField), gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 3;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.gridwidth = 2;
+        inputPanel.add((addTaskButton), gbc);
 
         //adding buttons to correct panels
-        inputPanel.add(addTaskButton);
         bottomPanel.add(clearButton);
         bottomPanel.add(deleteTaskButton);
         bottomPanel.add(loadTaskFile);
         bottomPanel.add(saveTaskFile);
         bottomPanel.add(completedTaskButton);
 
-        taskManager1.taskManager1(saveTaskFile, loadTaskFile, clearButton, addTaskButton, tableModel,
-                rowData, inputPanel, table, taskInputField, dateInputField, deleteTaskButton, completedTaskButton);
+        taskManager1.taskManager(saveTaskFile, loadTaskFile, clearButton, addTaskButton, tableModel,
+                rowData, inputPanel, table, taskInputField, dateInputField, deleteTaskButton,
+                completedTaskButton, priorityInputField);
 
         setVisible(true);
     }
