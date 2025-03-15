@@ -3,6 +3,7 @@ package lyssaCorlett.CW1.task;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.io.*;
+import java.nio.file.FileSystemException;
 import java.util.ArrayList;
 
 public class TaskManager extends JSplitPane {
@@ -45,14 +46,15 @@ public class TaskManager extends JSplitPane {
                 File file = fileChooser.getSelectedFile();
                 try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
                     rowData.add(reader.readLine());
+                    System.out.println(rowData);
                     //need to increase the increment to 4 (from 3), and the same for the array size for tableRowData,
                     // once the checkbox is added to the stored table data
                     for(int i = 0; i < rowData.size(); i += 4) {
-                        Object[] tablingRowData = new Object[4];
-                        tablingRowData[0] = rowData.get(i).toString();
-                        tablingRowData[1] = rowData.get(i + 1).toString();
-                        tablingRowData[2] = rowData.get(i + 2).toString();
-                        tablingRowData[3] = rowData.get(i + 3).toString();
+                        String[] tablingRowData = new String[4];
+                        tablingRowData[0] = (String) rowData.get(i);
+                        tablingRowData[1] = (String) rowData.get(i + 1);
+                        tablingRowData[2] = (String) rowData.get(i + 2);
+                        tablingRowData[3] = (String) rowData.get(i + 3);
                         tableModel.addRow(tablingRowData);
                     }
                     JOptionPane.showMessageDialog(inputPanel, "Task list loaded");

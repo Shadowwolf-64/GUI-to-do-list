@@ -73,7 +73,7 @@ public class InitGUI extends JFrame {
         JButton clearButton = new JButton("CLEAR");
         JButton deleteTaskButton = new JButton("DELETE TASK");
         JButton completedTaskButton = new JButton("Completed");
-        
+
 
         String[] priority_choices = {"1  Urgent", "2  High", "3  Moderate", "4  Low"};
 
