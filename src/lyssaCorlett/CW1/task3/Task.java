@@ -5,7 +5,7 @@ import javax.swing.*;
 public class Task {
     private JTextField task;
     private JFormattedTextField dueDate;
-    private boolean status;
+    private String status;
 
     public JTextField getTask() {
         return task;
@@ -23,11 +23,11 @@ public class Task {
         this.dueDate = dueDate;
     }
 
-    public boolean isStatus() {
+    public String getStatus() {
         return status;
     }
 
-    public void setStatus(boolean status) {
+    public void setStatus(String status) {
         this.status = status;
     }
 }
