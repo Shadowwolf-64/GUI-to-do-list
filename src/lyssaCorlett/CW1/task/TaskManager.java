@@ -2,8 +2,10 @@ package lyssaCorlett.CW1.task;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import java.awt.*;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Objects;
 
 
 public class TaskManager extends JSplitPane {
@@ -52,10 +54,7 @@ public class TaskManager extends JSplitPane {
                     String text = reader.readLine();
                     System.out.println(text);
                     String[] taskList = text.split(",");
-                    //rowData.add(reader.readLine());
-                   // Vector<String> vector = new Vector<>(rowData);
-                    //System.out.println(vector);
-                    //loops over the list of data, stored in the rowData array, from the txt file
+                    //loops over the list of data, stored in the taskList array, from the txt file
                     //and stores each set of data for a task into a new array, then uses this data to populate the table 
                     for(int i = 0; i < taskList.length; i += 4) {
                         Object[] data = new Object[4];
@@ -66,16 +65,6 @@ public class TaskManager extends JSplitPane {
 
                         tableModel.addRow(data);
                     }
-//                    String line;
-//                    while ((line = reader.readLine()) != null) {
-//                        String[] values = line.split(","); // Assuming CSV format
-//                        Vector<Object> row = new Vector<>();
-//                        for (String value : values) {
-//                            row.add(value.trim());
-//                        }
-//                        data.add(row);
-//                    }
-
                     JOptionPane.showMessageDialog(inputPanel, "Task list loaded");
                 } catch (IOException ex) {
                     JOptionPane.showMessageDialog(null, "Error loading file");
@@ -117,20 +106,6 @@ public class TaskManager extends JSplitPane {
         completedTaskButton.addActionListener(_ -> {
             task.setStatus("true");
             tableModel.setValueAt(task.getStatus(), table.getSelectedRow(), 3);
-            //try this for changing the background of the row to green when completed
-            // @Override
-            // public Component prepareRenderer(TableCellRenderer renderer, int row, int col) {
-            //     Component c = super.prepareRenderer(renderer, row, col);
-            //     String status = (String)getValueAt(table.getSelectedRow(), Completed);
-            //     if ("active".equals(status)) {
-            //         c.setBackground(Color.GREEN);
-            //         c.setForeground(Color.WHITE);
-            //     } else {
-            //         c.setBackground(super.getBackground());
-            //         c.setForeground(super.getForeground());
-            //     }
-            //     return c;
-            //}
             JOptionPane.showMessageDialog(inputPanel, "Task marked as completed");
         });
     }
