@@ -3,15 +3,16 @@ package lyssaCorlett.CW1.task;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.io.*;
-import java.nio.file.FileSystemException;
 import java.util.ArrayList;
 
+
 public class TaskManager extends JSplitPane {
+
     public void taskManager(JButton saveTaskFile, JButton loadTaskFile, JButton clearButton,
-                             JButton addTaskButton, DefaultTableModel tableModel,
-                             ArrayList<Object> rowData, JPanel inputPanel, JTable table,
-                             JTextField taskInputField, JFormattedTextField dateInputField,
-                             JButton deleteTaskButton, JButton completedTaskButton, JComboBox<String> priorityInputField) {
+                            JButton addTaskButton, DefaultTableModel tableModel,
+                            ArrayList<String> rowData, JPanel inputPanel, JTable table,
+                            JTextField taskInputField, JFormattedTextField dateInputField,
+                            JButton deleteTaskButton, JButton completedTaskButton, JComboBox<String> priorityInputField) {
         Task task = new Task();
         //saving task list from text area to a file using the save button
         saveTaskFile.addActionListener(_ -> {
@@ -19,18 +20,21 @@ public class TaskManager extends JSplitPane {
             int choice = fileChooser.showSaveDialog(null);
             if(choice == JFileChooser.APPROVE_OPTION) {
                 File file = fileChooser.getSelectedFile();
+                String filePath = file.getAbsolutePath();
+                if(!filePath.endsWith(".txt")) {
+                    file = new File(filePath + ".txt");
+                }
                 try(BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
                     int row = 0;
                     int col = 0;
                     while (row < tableModel.getRowCount()) {
                         rowData.add(tableModel.getValueAt(row, col).toString());
-                        rowData.add(tableModel.getValueAt(row,col + 1).toString());
+                        rowData.add(tableModel.getValueAt(row, col + 1).toString());
                         rowData.add(tableModel.getValueAt(row, col + 2).toString());
                         rowData.add(tableModel.getValueAt(row, col + 3).toString());
                         row += 1;
                     }
-                    String text = rowData.toString();
-                    writer.write(text);
+                    writer.write(rowData.toString());
                     JOptionPane.showMessageDialog(inputPanel, "Task list saved");
                 } catch (IOException ex) {
                     JOptionPane.showMessageDialog(null, "Error saving file");
@@ -45,18 +49,33 @@ public class TaskManager extends JSplitPane {
             if(choice == JFileChooser.APPROVE_OPTION) {
                 File file = fileChooser.getSelectedFile();
                 try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
-                    rowData.add(reader.readLine());
-                    System.out.println(rowData);
-                    //need to increase the increment to 4 (from 3), and the same for the array size for tableRowData,
-                    // once the checkbox is added to the stored table data
-                    for(int i = 0; i < rowData.size(); i += 4) {
-                        String[] tablingRowData = new String[4];
-                        tablingRowData[0] = (String) rowData.get(i);
-                        tablingRowData[1] = (String) rowData.get(i + 1);
-                        tablingRowData[2] = (String) rowData.get(i + 2);
-                        tablingRowData[3] = (String) rowData.get(i + 3);
-                        tableModel.addRow(tablingRowData);
+                    String text = reader.readLine();
+                    System.out.println(text);
+                    String[] taskList = text.split(",");
+                    //rowData.add(reader.readLine());
+                   // Vector<String> vector = new Vector<>(rowData);
+                    //System.out.println(vector);
+                    //loops over the list of data, stored in the rowData array, from the txt file
+                    //and stores each set of data for a task into a new array, then uses this data to populate the table 
+                    for(int i = 0; i < taskList.length; i += 4) {
+                        Object[] data = new Object[4];
+                        data[0] = taskList[i];
+                        data[1] = taskList[i + 1];
+                        data[2] = taskList[i + 2];
+                        data[3] = taskList[i + 3];
+
+                        tableModel.addRow(data);
                     }
+//                    String line;
+//                    while ((line = reader.readLine()) != null) {
+//                        String[] values = line.split(","); // Assuming CSV format
+//                        Vector<Object> row = new Vector<>();
+//                        for (String value : values) {
+//                            row.add(value.trim());
+//                        }
+//                        data.add(row);
+//                    }
+
                     JOptionPane.showMessageDialog(inputPanel, "Task list loaded");
                 } catch (IOException ex) {
                     JOptionPane.showMessageDialog(null, "Error loading file");
@@ -66,7 +85,12 @@ public class TaskManager extends JSplitPane {
 
         //clearing all tasks from text area
         clearButton.addActionListener(_ -> {
-            tableModel.setRowCount(0);
+            //tableModel.setRowCount(0);
+            while(tableModel.getRowCount() > 0) {
+                for (int i = 0; i < tableModel.getRowCount(); i++) {
+                    tableModel.removeRow(i);
+                }
+            }
             JOptionPane.showMessageDialog(inputPanel, "All tasks cleared from the list");
         });
 
@@ -93,6 +117,20 @@ public class TaskManager extends JSplitPane {
         completedTaskButton.addActionListener(_ -> {
             task.setStatus("true");
             tableModel.setValueAt(task.getStatus(), table.getSelectedRow(), 3);
+            //try this for changing the background of the row to green when completed
+            // @Override
+            // public Component prepareRenderer(TableCellRenderer renderer, int row, int col) {
+            //     Component c = super.prepareRenderer(renderer, row, col);
+            //     String status = (String)getValueAt(table.getSelectedRow(), Completed);
+            //     if ("active".equals(status)) {
+            //         c.setBackground(Color.GREEN);
+            //         c.setForeground(Color.WHITE);
+            //     } else {
+            //         c.setBackground(super.getBackground());
+            //         c.setForeground(super.getForeground());
+            //     }
+            //     return c;
+            //}
             JOptionPane.showMessageDialog(inputPanel, "Task marked as completed");
         });
     }

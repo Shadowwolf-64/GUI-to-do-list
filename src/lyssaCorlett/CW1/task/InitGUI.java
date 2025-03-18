@@ -15,14 +15,12 @@ public class InitGUI extends JFrame {
     public void initGUI() {
         TaskManager taskManager1 = new TaskManager();
 
-        ArrayList<Object> rowData = new ArrayList<>();
+        ArrayList<String> rowData = new ArrayList<>();
         //configuration of frame and creation of splitPane, JTable and default table model
         setSize(1000, 400);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); //closes window and program when clicking the exit button
         setLayout(new GridLayout()); //set layout for proper positioning of components
         JSplitPane splitPane = new JSplitPane();
-//        JCheckBox completion = new JCheckBox();
-//        completion.setBounds(100, 150, 500, 50);
         DefaultTableModel tableModel = new DefaultTableModel();
         JTable table = new JTable(tableModel);
         //populate table columns
@@ -30,6 +28,7 @@ public class InitGUI extends JFrame {
         tableModel.addColumn("Due Date");
         tableModel.addColumn("Priority");
         tableModel.addColumn("Completed");
+
         //sorts column cells in either ascending or descending order
         table.setAutoCreateRowSorter(true);
 
@@ -75,7 +74,7 @@ public class InitGUI extends JFrame {
         JButton completedTaskButton = new JButton("Completed");
 
 
-        String[] priority_choices = {"1  Urgent", "2  High", "3  Moderate", "4  Low"};
+        String[] priority_choices = {"1Urgent", "2High", "3Moderate", "4Low"};
 
         //setting up the date format for the due date of the task
         DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
