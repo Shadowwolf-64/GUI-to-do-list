@@ -1,7 +1,5 @@
 package lyssaCorlett.CW1.task;
 
-
-
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
@@ -74,7 +72,7 @@ public class InitGUI extends JFrame {
         JButton completedTaskButton = new JButton("Completed");
 
 
-        String[] priority_choices = {"1Urgent", "2High", "3Moderate", "4Low"};
+        String[] priorityChoices = {"1Urgent", "2High", "3Moderate", "4Low"};
 
         //setting up the date format for the due date of the task
         DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
@@ -83,7 +81,11 @@ public class InitGUI extends JFrame {
         final JTextField taskInputField = new JTextField(10);
         final JFormattedTextField dateInputField = new JFormattedTextField(dateFormat);
         dateInputField.setColumns(10);
-        final JComboBox<String> priorityInputField = new JComboBox<>(priority_choices);
+        final JComboBox<String> priorityInputField = new JComboBox<>(priorityChoices);
+//        Color priorityColor1 = new Color(255,0,0);
+//        Color priorityColor2 = new Color(255,100,0);
+//        Color priorityColor3 = new Color(255, 170, 0);
+//        Color priorityColor4 = new Color(255, 255, 50);
 
         //adding and configuration of splitPane
         add(splitPane);
