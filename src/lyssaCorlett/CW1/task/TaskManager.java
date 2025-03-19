@@ -92,7 +92,7 @@ public class TaskManager extends JSplitPane {
             task.setDueDate(dateInputField);
             task.setStatus("false");
             if(taskInputField.getText().isEmpty() || dateInputField.getText().isEmpty()) {
-                System.out.println("Code for error");
+                JOptionPane.showMessageDialog(inputPanel, "Error! All input fields must filled");
 
             } else {
                 try {

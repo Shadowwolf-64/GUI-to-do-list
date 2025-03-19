@@ -146,8 +146,14 @@ public class InitGUI extends JFrame {
         gbc.gridx = 0;
         gbc.gridy = 4;
         gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.gridwidth = 2;
+        gbc.gridwidth = 3;
         inputPanel.add((confirmation), gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 4;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.gridwidth = 3;
+        inputPanel.add((errorLabel), gbc);
 
         //adding buttons to correct panels
         bottomPanel.add(clearButton);
