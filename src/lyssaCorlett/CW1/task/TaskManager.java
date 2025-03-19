@@ -19,6 +19,7 @@ public class TaskManager extends JSplitPane {
                             JButton deleteTaskButton, JButton completedTaskButton, JComboBox<String> priorityInputField,
                             JLabel confirmation, JLabel errorLabel) {
         Task task = new Task();
+        Object[] options = {"Yes", "Cancel"}; //labels used for the names on JOptionPane buttons
         //saving task list from text area to a file using the save button
         saveTaskFile.addActionListener(_ -> {
             JFileChooser fileChooser = new JFileChooser();
@@ -77,13 +78,25 @@ public class TaskManager extends JSplitPane {
 
         //clearing all tasks from text area
         clearButton.addActionListener(_ -> {
-            //tableModel.setRowCount(0);
-            while(tableModel.getRowCount() > 0) {
-                for (int i = 0; i < tableModel.getRowCount(); i++) {
-                    tableModel.removeRow(i);
+            //gives the JOptionPane to check if the user wants to delete the all tasks and only deletes if the "Yes" option is selected
+            int option = JOptionPane.showOptionDialog(inputPanel,
+                    "Are you sure you want to delete this task?",
+                    "Delete task",
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.QUESTION_MESSAGE,
+                    null,     //uses default icon
+                    options,  //the names of buttons
+                    options[0]); //default button title
+            if(option == JOptionPane.YES_OPTION) {
+                while(tableModel.getRowCount() > 0) {
+                    for (int i = 0; i < tableModel.getRowCount(); i++) {
+                        tableModel.removeRow(i);
+                    }
                 }
+                JOptionPane.showMessageDialog(inputPanel, "All tasks cleared from the list");
+            } else if (option == JOptionPane.NO_OPTION) {
+                JOptionPane.getRootFrame().dispose(); //disposes of the JOptionPane and does not delete the selected task if the no option is selected.
             }
-            JOptionPane.showMessageDialog(inputPanel, "All tasks cleared from the list");
         });
 
         //add task to text area
@@ -110,8 +123,22 @@ public class TaskManager extends JSplitPane {
 
         //delete selected task
         deleteTaskButton.addActionListener(_ -> {
-            tableModel.removeRow(table.getSelectedRow());
-            JOptionPane.showMessageDialog(inputPanel, "Task deleted from the list");
+            //gives the JOptionPane to check if the user wants to delete the task and only deletes if the "Yes" option is selected
+            int option = JOptionPane.showOptionDialog(inputPanel,
+                    "Are you sure you want to delete this task?",
+                    "Delete task",
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.QUESTION_MESSAGE,
+                    null,     //uses default icon
+                    options,  //the names of buttons
+                    options[0]); //default button title
+            if(option == JOptionPane.YES_OPTION) {
+                tableModel.removeRow(table.getSelectedRow());
+                JOptionPane.showMessageDialog(inputPanel, "Task deleted from the list");
+            } else if (option == JOptionPane.NO_OPTION) {
+                JOptionPane.getRootFrame().dispose(); //disposes of the JOptionPane and does not delete the selected task if the no option is selected.
+            }
+
         });
 
         //complete task
