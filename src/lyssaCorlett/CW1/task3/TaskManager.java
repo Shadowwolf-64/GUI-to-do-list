@@ -102,7 +102,7 @@ public class TaskManager extends JSplitPane {
             int delay = 3000;
             task.setTask(taskInputField);
             task.setDueDate(dateInputField);
-            task.setStatus("false");
+            task.setStatus("NO");
             if(taskInputField.getText().isEmpty() || dateInputField.getText().isEmpty()) {
                 errorLabel.setVisible(true);
                 ActionListener taskPerformed = _ -> errorLabel.setVisible(false);
@@ -141,7 +141,7 @@ public class TaskManager extends JSplitPane {
 
         //changes the complete task column to true for the specified row
         completedTaskButton.addActionListener(_ -> {
-            task.setStatus("true");
+            task.setStatus("YES");
             tableModel.setValueAt(task.getStatus(), table.getSelectedRow(), 3);
             JOptionPane.showMessageDialog(inputPanel, "Task marked as completed");
         });
