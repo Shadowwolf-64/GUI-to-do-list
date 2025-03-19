@@ -1,4 +1,4 @@
-package lyssaCorlett.CW1.task;
+package lyssaCorlett.CW1.task3;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -87,10 +87,6 @@ public class InitGUI extends JFrame {
         final JFormattedTextField dateInputField = new JFormattedTextField(dateFormat);
         dateInputField.setColumns(10);
         final JComboBox<String> priorityInputField = new JComboBox<>(priorityChoices);
-//        Color priorityColor1 = new Color(255,0,0);
-//        Color priorityColor2 = new Color(255,100,0);
-//        Color priorityColor3 = new Color(255, 170, 0);
-//        Color priorityColor4 = new Color(255, 255, 50);
 
         //adding and configuration of splitPane
         add(splitPane);

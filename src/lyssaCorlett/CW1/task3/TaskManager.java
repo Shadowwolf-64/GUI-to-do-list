@@ -1,198 +1,116 @@
 package lyssaCorlett.CW1.task3;
 
 import javax.swing.*;
-import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
-import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.ActionListener;
 import java.io.*;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 
-public class TaskManager extends JFrame{
-    //create a frame (GUI window) and gives it a title
-    public void taskManager() {
+public class TaskManager extends JSplitPane {
+
+    public void taskManager(JButton saveTaskFile, JButton loadTaskFile, JButton clearButton,
+                            JButton addTaskButton, DefaultTableModel tableModel,
+                            ArrayList<String> rowData, JPanel inputPanel, JTable table,
+                            JTextField taskInputField, JFormattedTextField dateInputField,
+                            JButton deleteTaskButton, JButton completedTaskButton, JComboBox<String> priorityInputField,
+                            JLabel confirmation, JLabel errorLabel) {
         Task task = new Task();
-        ArrayList<Object> rowData = new ArrayList<>();
-        //configuration of frame and creation of splitPane, JTable and default table model
-        setSize(900, 600);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); //closes window and program when clicking the exit button
-        setLayout(new GridLayout()); //set layout for proper positioning of components
-        JSplitPane splitPane = new JSplitPane();
-//        JCheckBox completion = new JCheckBox();
-//        completion.setBounds(100, 150, 500, 50);
-        DefaultTableModel tableModel = new DefaultTableModel();
-        JTable table = new JTable(tableModel);
-        //populate table columns
-        tableModel.addColumn("Task");
-        tableModel.addColumn("Due Date");
-        tableModel.addColumn("Priority");
-        tableModel.addColumn("Completed");
-        //sorts column cells in either ascending or descending order
-        table.setAutoCreateRowSorter(true);
-
-        //centers all the text inside the JTable
-        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
-        centerRenderer.setHorizontalAlignment(JLabel.CENTER);
-        table.getColumnModel().getColumn(0).setCellRenderer(centerRenderer);
-        table.getColumnModel().getColumn(1).setCellRenderer(centerRenderer);
-        table.getColumnModel().getColumn(2).setCellRenderer(centerRenderer);
-        table.getColumnModel().getColumn(3).setCellRenderer(centerRenderer);
-
-
-        //panels
-        JPanel leftPanel = new JPanel(); //container panel for left half of window
-        JPanel rightPanel = new JPanel(); //container for right half of window
-        JPanel inputPanel = new JPanel();
-        JPanel taskPanel = new JPanel();
-        JPanel bottomPanel = new JPanel();
-
-        //setting layout of each panel
-        leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
-        rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.Y_AXIS));
-        bottomPanel.setLayout(new BoxLayout(bottomPanel, BoxLayout.LINE_AXIS));
-
-        //creating scroll pane for task list and setting size and alignment
-        JScrollPane tasksScrollPane = new JScrollPane(table);
-        tasksScrollPane.setPreferredSize(new Dimension(520, 450));
-        tasksScrollPane.setAlignmentX(LEFT_ALIGNMENT);
-        table.setFillsViewportHeight(true);
-
-        //creating labels
-        JLabel currentTasksLabel = new JLabel("Current tasks");
-        JLabel addPanelLabel = new JLabel("Add a new task");
-        JLabel newTaskLabel = new JLabel("Task: ");
-        JLabel newDateLabel = new JLabel("Due date: ");
-        JLabel newPriorityLabel = new JLabel("Priority level: ");
-
-        //button creation
-        JButton addTaskButton = new JButton("ADD TASK");
-        JButton saveTaskFile = new JButton("SAVE TASKS TO FILE");
-        JButton loadTaskFile = new JButton("LOAD TASKS FILE");
-        JButton clearButton = new JButton("CLEAR");
-        JButton deleteTaskButton = new JButton("DELETE TASK");
-        JButton completedTaskButton = new JButton("Completed");
-
-        String[] priority_choices = {"1  Urgent", "2  High", "3  Moderate", "4  Low"};
-
-        //setting up the date format for the due date of the task
-        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-
-        //input fields
-        final JTextField taskInputField = new JTextField(10);
-        final JFormattedTextField dateInputField = new JFormattedTextField(dateFormat);
-        dateInputField.setColumns(10);
-        final JComboBox<String> priorityInputField = new JComboBox<>(priority_choices);
-
-        //adding and configuration of splitPane
-        add(splitPane);
-        splitPane.setOrientation(JSplitPane.HORIZONTAL_SPLIT);
-        splitPane.setDividerLocation(550);
-        splitPane.setTopComponent(leftPanel);
-        splitPane.setBottomComponent(rightPanel);
-
-        //adding labels to panels and nesting panels
-        leftPanel.add(currentTasksLabel);
-        leftPanel.add(taskPanel);
-        rightPanel.add(addPanelLabel);
-        rightPanel.add(inputPanel);
-        taskPanel.add(tasksScrollPane);
-        taskPanel.add(bottomPanel);
-
-        //adding input fields and matching labels to right panel
-        inputPanel.add(newTaskLabel);
-        inputPanel.add(taskInputField);
-        inputPanel.add(newDateLabel);
-        inputPanel.add(dateInputField);
-        inputPanel.add(newPriorityLabel);
-        inputPanel.add(priorityInputField);
-
-        //adding buttons to correct panels
-        inputPanel.add(addTaskButton);
-        bottomPanel.add(clearButton);
-        bottomPanel.add(deleteTaskButton);
-        bottomPanel.add(loadTaskFile);
-        bottomPanel.add(saveTaskFile);
-        bottomPanel.add(completedTaskButton);
-
-        setVisible(true);
-
+        Object[] options = {"Yes", "Cancel"}; //labels used for the names on JOptionPane buttons
         //saving task list from text area to a file using the save button
-        saveTaskFile.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                JFileChooser fileChooser = new JFileChooser();
-                int choice = fileChooser.showSaveDialog(null);
-                if(choice == JFileChooser.APPROVE_OPTION) {
-                    File file = fileChooser.getSelectedFile();
-                    try(BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
-                        int row = 0;
-                        int col = 0;
-                        while (row < tableModel.getRowCount()) {
-                            rowData.add(tableModel.getValueAt(row, col).toString());
-                            rowData.add(tableModel.getValueAt(row,col + 1).toString());
-                            rowData.add(tableModel.getValueAt(row, col + 2).toString());
-                            rowData.add(tableModel.getValueAt(row, col + 3).toString());
-                            row += 1;
-                        }
-                        String text = rowData.toString();
-                        writer.write(text);
-                        JOptionPane.showMessageDialog(inputPanel, "Task list saved");
-                    } catch (IOException ex) {
-                        JOptionPane.showMessageDialog(null, "Error saving file");
+        saveTaskFile.addActionListener(_ -> {
+            JFileChooser fileChooser = new JFileChooser();
+            int choice = fileChooser.showSaveDialog(null);
+            if(choice == JFileChooser.APPROVE_OPTION) {
+                File file = fileChooser.getSelectedFile();
+                String filePath = file.getAbsolutePath();
+                if(!filePath.endsWith(".txt")) {
+                    file = new File(filePath + ".txt");
+                }
+                try(BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
+                    int row = 0;
+                    int col = 0;
+                    while (row < tableModel.getRowCount()) {
+                        rowData.add(tableModel.getValueAt(row, col).toString());
+                        rowData.add(tableModel.getValueAt(row, col + 1).toString());
+                        rowData.add(tableModel.getValueAt(row, col + 2).toString());
+                        rowData.add(tableModel.getValueAt(row, col + 3).toString());
+                        row += 1;
                     }
+                    writer.write(rowData.toString());
+                    JOptionPane.showMessageDialog(inputPanel, "Task list saved");
+                } catch (IOException ex) {
+                    JOptionPane.showMessageDialog(null, "Error saving file");
                 }
             }
         });
 
         //loading a specific file to the text area using the load button
-        loadTaskFile.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                JFileChooser fileChooser = new JFileChooser();
-                int choice = fileChooser.showOpenDialog(table);
-                if(choice == JFileChooser.APPROVE_OPTION) {
-                    File file = fileChooser.getSelectedFile();
-                    try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
-                        rowData.add(reader.readLine());
-                        //need to increase the increment to 4 (from 3), and the same for the array size for tableRowData,
-                        // once the checkbox is added to the stored table data
-                        for(int i = 0; i < rowData.size(); i += 4) {
-                            Object[] tablingRowData = new Object[4];
-                            tablingRowData[0] = rowData.get(i).toString();
-                            tablingRowData[1] = rowData.get(i + 1).toString();
-                            tablingRowData[2] = rowData.get(i + 2).toString();
-                            tablingRowData[3] = rowData.get(i + 3).toString();
-                            tableModel.addRow(tablingRowData);
-                        }
-                        JOptionPane.showMessageDialog(inputPanel, "Task list loaded");
-                    } catch (IOException ex) {
-                        JOptionPane.showMessageDialog(null, "Error loading file");
+        loadTaskFile.addActionListener(_ -> {
+            JFileChooser fileChooser = new JFileChooser();
+            int choice = fileChooser.showOpenDialog(table);
+            if(choice == JFileChooser.APPROVE_OPTION) {
+                File file = fileChooser.getSelectedFile();
+                try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+                    String text = reader.readLine();
+                    String[] taskList = text.split(",");
+                    //loops over the list of data, stored in the taskList array, from the txt file
+                    //and stores each set of data for a task into a new array, then uses this data to populate the table 
+                    for(int i = 0; i < taskList.length; i += 4) {
+                        Object[] data = new Object[4];
+                        data[0] = taskList[i];
+                        data[1] = taskList[i + 1];
+                        data[2] = taskList[i + 2];
+                        data[3] = taskList[i + 3];
+
+                        tableModel.addRow(data);
                     }
+                    JOptionPane.showMessageDialog(inputPanel, "Task list loaded");
+                } catch (IOException ex) {
+                    JOptionPane.showMessageDialog(null, "Error loading file");
                 }
             }
         });
 
         //clearing all tasks from text area
-        clearButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                tableModel.setRowCount(0);
+        clearButton.addActionListener(_ -> {
+            //gives the JOptionPane to check if the user wants to delete the all tasks and only deletes if the "Yes" option is selected
+            int option = JOptionPane.showOptionDialog(inputPanel,
+                    "Are you sure you want to delete this task?",
+                    "Delete task",
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.QUESTION_MESSAGE,
+                    null,     //uses default icon
+                    options,  //the names of buttons
+                    options[0]); //default button title
+            if(option == JOptionPane.YES_OPTION) {
+                while(tableModel.getRowCount() > 0) {
+                    for (int i = 0; i < tableModel.getRowCount(); i++) {
+                        tableModel.removeRow(i);
+                    }
+                }
+                JOptionPane.showMessageDialog(inputPanel, "All tasks cleared from the list");
+            } else if (option == JOptionPane.NO_OPTION) {
+                JOptionPane.getRootFrame().dispose(); //disposes of the JOptionPane and does not delete the selected task if the no option is selected.
             }
         });
 
         //add task to text area
-        addTaskButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
+        addTaskButton.addActionListener(_ -> {
+            int delay = 3000;
+            task.setTask(taskInputField);
+            task.setDueDate(dateInputField);
+            task.setStatus("false");
+            if(taskInputField.getText().isEmpty() || dateInputField.getText().isEmpty()) {
+                errorLabel.setVisible(true);
+                ActionListener taskPerformed = _ -> errorLabel.setVisible(false);
+                new Timer(delay, taskPerformed).start();
+            } else {
                 try {
-                    task.setTask(taskInputField);
-                    task.setDueDate(dateInputField);
-                    task.setStatus("false");
                     tableModel.addRow(new Object[]{task.getTask().getText(), task.getDueDate().getText(), priorityInputField.getSelectedItem(), task.getStatus()});
-                    JOptionPane.showMessageDialog(inputPanel, "New task added to the list");
+                    confirmation.setVisible(true);
+                    ActionListener taskPerformed = _ -> confirmation.setVisible(false);
+                    new Timer(delay, taskPerformed).start();
                 } catch (Exception ex) {
                     throw new RuntimeException(ex);
                 }
@@ -200,21 +118,30 @@ public class TaskManager extends JFrame{
         });
 
         //delete selected task
-        deleteTaskButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
+        deleteTaskButton.addActionListener(_ -> {
+            //gives the JOptionPane to check if the user wants to delete the task and only deletes if the "Yes" option is selected
+            int option = JOptionPane.showOptionDialog(inputPanel,
+                    "Are you sure you want to delete this task?",
+                    "Delete task",
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.QUESTION_MESSAGE,
+                    null,     //uses default icon
+                    options,  //the names of buttons
+                    options[0]); //default button title
+            if(option == JOptionPane.YES_OPTION) {
                 tableModel.removeRow(table.getSelectedRow());
+                JOptionPane.showMessageDialog(inputPanel, "Task deleted from the list");
+            } else if (option == JOptionPane.NO_OPTION) {
+                JOptionPane.getRootFrame().dispose(); //disposes of the JOptionPane and does not delete the selected task if the no option is selected.
             }
+
         });
 
         //complete task
-        completedTaskButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                task.setStatus("true");
-
-                tableModel.setValueAt(task.getStatus(), table.getSelectedRow(), 3);
-            }
+        completedTaskButton.addActionListener(_ -> {
+            task.setStatus("true");
+            tableModel.setValueAt(task.getStatus(), table.getSelectedRow(), 3);
+            JOptionPane.showMessageDialog(inputPanel, "Task marked as completed");
         });
     }
 }
