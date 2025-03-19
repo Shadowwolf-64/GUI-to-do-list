@@ -3,6 +3,8 @@ package lyssaCorlett.CW1.task;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Objects;
@@ -14,7 +16,8 @@ public class TaskManager extends JSplitPane {
                             JButton addTaskButton, DefaultTableModel tableModel,
                             ArrayList<String> rowData, JPanel inputPanel, JTable table,
                             JTextField taskInputField, JFormattedTextField dateInputField,
-                            JButton deleteTaskButton, JButton completedTaskButton, JComboBox<String> priorityInputField) {
+                            JButton deleteTaskButton, JButton completedTaskButton, JComboBox<String> priorityInputField,
+                            JLabel confirmation) {
         Task task = new Task();
         //saving task list from text area to a file using the save button
         saveTaskFile.addActionListener(_ -> {
@@ -85,14 +88,22 @@ public class TaskManager extends JSplitPane {
 
         //add task to text area
         addTaskButton.addActionListener(_ -> {
-            try {
-                task.setTask(taskInputField);
-                task.setDueDate(dateInputField);
-                task.setStatus("false");
-                tableModel.addRow(new Object[]{task.getTask().getText(), task.getDueDate().getText(), priorityInputField.getSelectedItem(), task.getStatus()});
-                JOptionPane.showMessageDialog(inputPanel, "New task added to the list");
-            } catch (Exception ex) {
-                throw new RuntimeException(ex);
+            task.setTask(taskInputField);
+            task.setDueDate(dateInputField);
+            task.setStatus("false");
+            if(taskInputField.getText().isEmpty() || dateInputField.getText().isEmpty()) {
+                System.out.println("Code for error");
+
+            } else {
+                try {
+                    tableModel.addRow(new Object[]{task.getTask().getText(), task.getDueDate().getText(), priorityInputField.getSelectedItem(), task.getStatus()});
+                    confirmation.setVisible(true);
+                    int delay = 3000;
+                    ActionListener taskPerformed = _ -> confirmation.setVisible(false);
+                    new Timer(delay, taskPerformed).start();
+                } catch (Exception ex) {
+                    throw new RuntimeException(ex);
+                }
             }
         });
 

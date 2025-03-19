@@ -62,6 +62,11 @@ public class InitGUI extends JFrame {
         JLabel newTaskLabel = new JLabel("Task: ");
         JLabel newDateLabel = new JLabel("Due date: ");
         JLabel newPriorityLabel = new JLabel("Priority level: ");
+        JLabel confirmation = new JLabel("New task added to the list");
+        JLabel errorLabel = new JLabel("Please fill in all of the boxes");
+        //setting condition dependent label visibility to false
+        errorLabel.setVisible(false);
+        confirmation.setVisible(false);
 
         //button creation
         JButton addTaskButton = new JButton("ADD TASK");
@@ -138,6 +143,12 @@ public class InitGUI extends JFrame {
         gbc.gridwidth = 2;
         inputPanel.add((addTaskButton), gbc);
 
+        gbc.gridx = 0;
+        gbc.gridy = 4;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.gridwidth = 2;
+        inputPanel.add((confirmation), gbc);
+
         //adding buttons to correct panels
         bottomPanel.add(clearButton);
         bottomPanel.add(deleteTaskButton);
@@ -147,7 +158,7 @@ public class InitGUI extends JFrame {
 
         taskManager1.taskManager(saveTaskFile, loadTaskFile, clearButton, addTaskButton, tableModel,
                 rowData, inputPanel, table, taskInputField, dateInputField, deleteTaskButton,
-                completedTaskButton, priorityInputField);
+                completedTaskButton, priorityInputField, confirmation);
 
         setVisible(true);
     }
