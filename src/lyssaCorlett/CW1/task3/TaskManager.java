@@ -24,12 +24,14 @@ public class TaskManager extends JSplitPane {
             if(choice == JFileChooser.APPROVE_OPTION) {
                 File file = fileChooser.getSelectedFile();
                 String filePath = file.getAbsolutePath();
+                //checking that the file extension is a txt extension
                 if(!filePath.endsWith(".txt")) {
                     file = new File(filePath + ".txt");
                 }
                 try(BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
                     int row = 0;
                     int col = 0;
+                    //collecting data from the task table and storing it in the txt file
                     while (row < tableModel.getRowCount()) {
                         rowData.add(tableModel.getValueAt(row, col).toString());
                         rowData.add(tableModel.getValueAt(row, col + 1).toString());
@@ -72,7 +74,7 @@ public class TaskManager extends JSplitPane {
             }
         });
 
-        //clearing all tasks from text area
+        //clearing all tasks from task table area
         clearButton.addActionListener(_ -> {
             //gives the JOptionPane to check if the user wants to delete the all tasks and only deletes if the "Yes" option is selected
             int option = JOptionPane.showOptionDialog(inputPanel,
@@ -80,8 +82,8 @@ public class TaskManager extends JSplitPane {
                     "Delete task",
                     JOptionPane.YES_NO_OPTION,
                     JOptionPane.QUESTION_MESSAGE,
-                    null,     //uses default icon
-                    options,  //the names of buttons
+                    null, //uses default icon
+                    options, //the names of buttons
                     options[0]); //default button title
             if(option == JOptionPane.YES_OPTION) {
                 while(tableModel.getRowCount() > 0) {
@@ -95,7 +97,7 @@ public class TaskManager extends JSplitPane {
             }
         });
 
-        //add task to text area
+        //add task to the table area
         addTaskButton.addActionListener(_ -> {
             int delay = 3000;
             task.setTask(taskInputField);
@@ -117,7 +119,7 @@ public class TaskManager extends JSplitPane {
             }
         });
 
-        //delete selected task
+        //delete selected task from the task table
         deleteTaskButton.addActionListener(_ -> {
             //gives the JOptionPane to check if the user wants to delete the task and only deletes if the "Yes" option is selected
             int option = JOptionPane.showOptionDialog(inputPanel,
@@ -125,8 +127,8 @@ public class TaskManager extends JSplitPane {
                     "Delete task",
                     JOptionPane.YES_NO_OPTION,
                     JOptionPane.QUESTION_MESSAGE,
-                    null,     //uses default icon
-                    options,  //the names of buttons
+                    null, //uses default icon
+                    options, //the names of buttons
                     options[0]); //default button title
             if(option == JOptionPane.YES_OPTION) {
                 tableModel.removeRow(table.getSelectedRow());
@@ -137,7 +139,7 @@ public class TaskManager extends JSplitPane {
 
         });
 
-        //complete task
+        //changes the complete task column to true for the specified row
         completedTaskButton.addActionListener(_ -> {
             task.setStatus("true");
             tableModel.setValueAt(task.getStatus(), table.getSelectedRow(), 3);
