@@ -17,7 +17,7 @@ public class TaskManager extends JSplitPane {
                             ArrayList<String> rowData, JPanel inputPanel, JTable table,
                             JTextField taskInputField, JFormattedTextField dateInputField,
                             JButton deleteTaskButton, JButton completedTaskButton, JComboBox<String> priorityInputField,
-                            JLabel confirmation) {
+                            JLabel confirmation, JLabel errorLabel) {
         Task task = new Task();
         //saving task list from text area to a file using the save button
         saveTaskFile.addActionListener(_ -> {
@@ -88,17 +88,18 @@ public class TaskManager extends JSplitPane {
 
         //add task to text area
         addTaskButton.addActionListener(_ -> {
+            int delay = 3000;
             task.setTask(taskInputField);
             task.setDueDate(dateInputField);
             task.setStatus("false");
             if(taskInputField.getText().isEmpty() || dateInputField.getText().isEmpty()) {
-                JOptionPane.showMessageDialog(inputPanel, "Error! All input fields must filled");
-
+                errorLabel.setVisible(true);
+                ActionListener taskPerformed = _ -> errorLabel.setVisible(false);
+                new Timer(delay, taskPerformed).start();
             } else {
                 try {
                     tableModel.addRow(new Object[]{task.getTask().getText(), task.getDueDate().getText(), priorityInputField.getSelectedItem(), task.getStatus()});
                     confirmation.setVisible(true);
-                    int delay = 3000;
                     ActionListener taskPerformed = _ -> confirmation.setVisible(false);
                     new Timer(delay, taskPerformed).start();
                 } catch (Exception ex) {

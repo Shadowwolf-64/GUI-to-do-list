@@ -164,7 +164,7 @@ public class InitGUI extends JFrame {
 
         taskManager1.taskManager(saveTaskFile, loadTaskFile, clearButton, addTaskButton, tableModel,
                 rowData, inputPanel, table, taskInputField, dateInputField, deleteTaskButton,
-                completedTaskButton, priorityInputField, confirmation);
+                completedTaskButton, priorityInputField, confirmation, errorLabel);
 
         setVisible(true);
     }
