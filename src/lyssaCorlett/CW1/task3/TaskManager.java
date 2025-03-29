@@ -3,6 +3,8 @@ package lyssaCorlett.CW1.task3;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.io.*;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -48,6 +50,41 @@ public class TaskManager extends JSplitPane {
 
         });
 
+        //allows users to use the enter key instead of needing to click a button with the mouse when adding a task
+        addTaskButton.addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {}
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    //sets the time limit for displaying error messages when adding tasks
+                    int delay = 3500;
+                    //sets user input to the task object
+                    task.setTask(taskInputField);
+                    task.setDueDate(dateInputField);
+                    task.setStatus("NO");
+
+                    if (taskInputField.getText().isEmpty() || dateInputField.getText().isEmpty()) {
+                        errorLabel.setVisible(true);
+                        ActionListener taskPerformed = _ -> errorLabel.setVisible(false);
+                        new Timer(delay, taskPerformed).start();
+                    } else {
+                        try {
+                            tableModel.addRow(new Object[]{task.getTask().getText(), task.getDueDate().getText(), priorityInputField.getSelectedItem(), task.getStatus()});
+                            confirmation.setVisible(true);
+                            ActionListener taskPerformed = _ -> confirmation.setVisible(false);
+                            new Timer(delay, taskPerformed).start();
+                        } catch (Exception ex) {
+                            throw new RuntimeException(ex);
+                        }
+                    }
+                }
+            }
+            @Override
+            public void keyReleased(KeyEvent e) {}
+        });
+
         //saving task list from table in the left panel to a file using the save button
         saveTaskFile.addActionListener(_ -> {
             JFileChooser fileChooser = new JFileChooser();
@@ -74,6 +111,44 @@ public class TaskManager extends JSplitPane {
                     JOptionPane.showMessageDialog(null, "Error saving file");
                 }
             }
+        });
+
+        //allows users to use the enter key instead of needing to click a button with the mouse when saving a file
+        saveTaskFile.addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {}
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    JFileChooser fileChooser = new JFileChooser();
+                    int choice = fileChooser.showSaveDialog(null);
+                    if(choice == JFileChooser.APPROVE_OPTION) {
+                        File file = fileChooser.getSelectedFile();
+                        String filePath = file.getAbsolutePath();
+                        try(BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
+                            int row = 0;
+                            int col = 0;
+                            //collecting data from the task table and storing it in the txt file
+                            while (row < tableModel.getRowCount()) {
+                                rowData.add((String) tableModel.getValueAt(row, col));
+                                rowData.add((String) tableModel.getValueAt(row, col + 1));
+                                rowData.add((String) tableModel.getValueAt(row, col + 2));
+                                rowData.add((String) tableModel.getValueAt(row, col + 3));
+                                row += 1;
+                            }
+                            //removing the [] from around the file data
+                            String taskData = rowData.toString().replace("[", "").replace("]", "");
+                            writer.write(taskData);
+                            JOptionPane.showMessageDialog(inputPanel, "Task list saved");
+                        } catch (IOException ex) {
+                            JOptionPane.showMessageDialog(null, "Error saving file");
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {}
         });
 
         //loading a specific file to the text area using the load button

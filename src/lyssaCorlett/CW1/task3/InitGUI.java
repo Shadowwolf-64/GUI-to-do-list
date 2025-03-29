@@ -3,16 +3,14 @@ package lyssaCorlett.CW1.task3;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.awt.event.ActionListener;
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 
 public class InitGUI extends JFrame {
 
     public void initGUI() {
+        final Color veryLightGray = new Color(214, 214, 214);
         TaskManager taskManager1 = new TaskManager();
 
         ArrayList<String> rowData = new ArrayList<>();
@@ -57,7 +55,7 @@ public class InitGUI extends JFrame {
         JLabel newDateLabel = new JLabel("Due date: ");
         JLabel newPriorityLabel = new JLabel("Priority level: ");
         JLabel confirmation = new JLabel("New task added to the list");
-        JLabel errorLabel = new JLabel("Please fill in all of the boxes");
+        JLabel errorLabel = new JLabel("Please fill in all of the boxes correctly");
         JLabel dateErrorLabel = new JLabel("Please enter a date in the format of dd/MM/yyyy");
 
         //setting condition dependent label visibility to false
@@ -109,6 +107,8 @@ public class InitGUI extends JFrame {
         rightPanel.add(inputPanel);
         taskPanel.add(tasksScrollPane);
         taskPanel.add(bottomPanel);
+        taskPanel.setBackground(veryLightGray);
+        inputPanel.setBackground(veryLightGray);
 
         //organising the layout of the components in the input panel
         GridBagLayout layout = new GridBagLayout();
