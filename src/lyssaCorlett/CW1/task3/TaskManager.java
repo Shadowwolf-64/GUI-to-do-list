@@ -330,5 +330,20 @@ public class TaskManager extends JSplitPane {
 
             JOptionPane.showMessageDialog(inputPanel, "Task marked as completed");
         });
+
+        //allows users to use the enter key instead of needing to click a button with the mouse when using the complete task button
+        completedTaskButton.addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {}
+            @Override
+            public void keyPressed(KeyEvent e) {
+                task.setStatus("YES");
+                tableModel.setValueAt(task.getStatus(), table.getSelectedRow(), 3);
+
+                JOptionPane.showMessageDialog(inputPanel, "Task marked as completed");
+            }
+            @Override
+            public void keyReleased(KeyEvent e) {}
+        });
     }
 }
