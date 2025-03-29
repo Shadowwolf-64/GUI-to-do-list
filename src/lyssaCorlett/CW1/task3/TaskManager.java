@@ -14,9 +14,9 @@ public class TaskManager extends JSplitPane {
     public void taskManager(JButton saveTaskFile, JButton loadTaskFile, JButton clearButton,
                             JButton addTaskButton, DefaultTableModel tableModel,
                             ArrayList<String> rowData, JPanel inputPanel, JTable table,
-                            JTextField taskInputField, JFormattedTextField dateInputField, DateFormat dateFormat,
+                            JTextField taskInputField, JFormattedTextField dateInputField,
                             JButton deleteTaskButton, JButton completedTaskButton, JComboBox<String> priorityInputField,
-                            JLabel confirmation, JLabel errorLabel, JLabel dateErrorLabel) {
+                            JLabel confirmation, JLabel errorLabel) {
 
         //creating the task object
         Task task = new Task();
@@ -31,19 +31,7 @@ public class TaskManager extends JSplitPane {
             task.setDueDate(dateInputField);
             task.setStatus("NO");
 
-            //error handling of date input field for incorrect format
-            if (dateInputField.getText() != null || !dateInputField.getText().isEmpty()) {
-                try {
-                    Date parsedDate = dateFormat.parse(dateInputField.getText());
-                    dateInputField.setText(dateFormat.format(parsedDate));
-                } catch (ParseException e) {
-                    dateErrorLabel.setVisible(true);
-                    ActionListener taskPerformed = _ -> dateErrorLabel.setVisible(false);
-                    new Timer(delay, taskPerformed).start();
-                }
-            }
-
-            if(taskInputField.getText().isEmpty() || dateInputField.getText().isEmpty()) {
+            if (taskInputField.getText().isEmpty() || dateInputField.getText().isEmpty()) {
                 errorLabel.setVisible(true);
                 ActionListener taskPerformed = _ -> errorLabel.setVisible(false);
                 new Timer(delay, taskPerformed).start();
@@ -57,6 +45,7 @@ public class TaskManager extends JSplitPane {
                     throw new RuntimeException(ex);
                 }
             }
+
         });
 
         //saving task list from table in the left panel to a file using the save button

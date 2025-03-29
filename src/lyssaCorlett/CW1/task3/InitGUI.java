@@ -3,9 +3,12 @@ package lyssaCorlett.CW1.task3;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.awt.event.ActionListener;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class InitGUI extends JFrame {
 
@@ -56,6 +59,7 @@ public class InitGUI extends JFrame {
         JLabel confirmation = new JLabel("New task added to the list");
         JLabel errorLabel = new JLabel("Please fill in all of the boxes");
         JLabel dateErrorLabel = new JLabel("Please enter a date in the format of dd/MM/yyyy");
+
         //setting condition dependent label visibility to false
         errorLabel.setVisible(false);
         confirmation.setVisible(false);
@@ -168,8 +172,9 @@ public class InitGUI extends JFrame {
         bottomPanel.add(completedTaskButton);
 
         taskManager1.taskManager(saveTaskFile, loadTaskFile, clearButton, addTaskButton, tableModel,
-                rowData, inputPanel, table, taskInputField, dateInputField, dateFormat, deleteTaskButton,
-                completedTaskButton, priorityInputField, confirmation, errorLabel, dateErrorLabel);
+                rowData, inputPanel, table, taskInputField, dateInputField, deleteTaskButton,
+                completedTaskButton, priorityInputField, confirmation, errorLabel);
+
 
         setVisible(true);
     }
