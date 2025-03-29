@@ -31,11 +31,12 @@ public class TaskManager extends JSplitPane {
             task.setDueDate(dateInputField);
             task.setStatus("NO");
 
+            //displays an error message if any of the input fields are no filled in correctly
             if (taskInputField.getText().isEmpty() || dateInputField.getText().isEmpty()) {
                 errorLabel.setVisible(true);
                 ActionListener taskPerformed = _ -> errorLabel.setVisible(false);
                 new Timer(delay, taskPerformed).start();
-            } else {
+            } else if (!taskInputField.getText().isEmpty() && !dateInputField.getText().isEmpty()) { //adds task to list if all input fields are correct
                 try {
                     tableModel.addRow(new Object[]{task.getTask().getText(), task.getDueDate().getText(), priorityInputField.getSelectedItem(), task.getStatus()});
                     confirmation.setVisible(true);
@@ -46,14 +47,12 @@ public class TaskManager extends JSplitPane {
                     throw new RuntimeException(ex);
                 }
             }
-
         });
 
         //allows users to use the enter key instead of needing to click a button with the mouse when adding a task
         addTaskButton.addKeyListener(new KeyListener() {
             @Override
             public void keyTyped(KeyEvent e) {}
-
             @Override
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_ENTER) {
@@ -63,12 +62,12 @@ public class TaskManager extends JSplitPane {
                     task.setTask(taskInputField);
                     task.setDueDate(dateInputField);
                     task.setStatus("NO");
-
+                    //displays an error message if any of the input fields are no filled in correctly
                     if (taskInputField.getText().isEmpty() || dateInputField.getText().isEmpty()) {
                         errorLabel.setVisible(true);
                         ActionListener taskPerformed = _ -> errorLabel.setVisible(false);
                         new Timer(delay, taskPerformed).start();
-                    } else {
+                    } else if (!taskInputField.getText().isEmpty() && !dateInputField.getText().isEmpty()) { //adds task to list if all input fields are correct{
                         try {
                             tableModel.addRow(new Object[]{task.getTask().getText(), task.getDueDate().getText(), priorityInputField.getSelectedItem(), task.getStatus()});
                             confirmation.setVisible(true);
