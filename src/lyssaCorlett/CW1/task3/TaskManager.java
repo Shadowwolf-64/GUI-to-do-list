@@ -177,6 +177,41 @@ public class TaskManager extends JSplitPane {
             }
         });
 
+        //allows users to use the enter key instead of needing to click a button with the mouse when loading a file
+        loadTaskFile.addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {}
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    JFileChooser fileChooser = new JFileChooser();
+                    int choice = fileChooser.showOpenDialog(table);
+                    if(choice == JFileChooser.APPROVE_OPTION) {
+                        File file = fileChooser.getSelectedFile();
+                        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+                            String text = reader.readLine();
+                            String[] taskList = text.split(",");
+                    /*loops over the list of data, stored in the taskList array, from the txt file
+                    and stores each set of data for a task into a new array, then uses this data to populate the table*/
+                            for(int i = 0; i < taskList.length; i += 4) {
+                                Object[] data = new Object[4];
+                                data[0] = taskList[i];
+                                data[1] = taskList[i + 1];
+                                data[2] = taskList[i + 2];
+                                data[3] = taskList[i + 3];
+                                tableModel.addRow(data);
+                            }
+                            JOptionPane.showMessageDialog(inputPanel, "Task list loaded");
+                        } catch (IOException ex) {
+                            JOptionPane.showMessageDialog(null, "Error loading file");
+                        }
+                    }
+                }
+            }
+            @Override
+            public void keyReleased(KeyEvent e) {}
+        });
+
         //clearing all tasks from task table area
         clearButton.addActionListener(_ -> {
             //gives the JOptionPane to check if the user wants to delete the all tasks and only deletes if the "Yes" option is selected
