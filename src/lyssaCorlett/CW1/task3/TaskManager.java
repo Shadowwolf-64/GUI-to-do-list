@@ -6,10 +6,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.*;
-import java.text.DateFormat;
-import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Date;
+
 
 public class TaskManager extends JSplitPane {
 
@@ -44,6 +42,7 @@ public class TaskManager extends JSplitPane {
                     ActionListener taskPerformed = _ -> confirmation.setVisible(false);
                     new Timer(delay, taskPerformed).start();
                 } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(null, "Error adding task, please try again");
                     throw new RuntimeException(ex);
                 }
             }
@@ -76,6 +75,7 @@ public class TaskManager extends JSplitPane {
                             ActionListener taskPerformed = _ -> confirmation.setVisible(false);
                             new Timer(delay, taskPerformed).start();
                         } catch (Exception ex) {
+                            JOptionPane.showMessageDialog(null, "Error adding task, please try again");
                             throw new RuntimeException(ex);
                         }
                     }
@@ -112,44 +112,44 @@ public class TaskManager extends JSplitPane {
                 }
             }
         });
-
-        //allows users to use the enter key instead of needing to click a button with the mouse when saving a file
-        saveTaskFile.addKeyListener(new KeyListener() {
-            @Override
-            public void keyTyped(KeyEvent e) {}
-            @Override
-            public void keyPressed(KeyEvent e) {
-                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-                    JFileChooser fileChooser = new JFileChooser();
-                    int choice = fileChooser.showSaveDialog(null);
-                    if(choice == JFileChooser.APPROVE_OPTION) {
-                        File file = fileChooser.getSelectedFile();
-                        String filePath = file.getAbsolutePath();
-                        try(BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
-                            int row = 0;
-                            int col = 0;
-                            //collecting data from the task table and storing it in the txt file
-                            while (row < tableModel.getRowCount()) {
-                                rowData.add((String) tableModel.getValueAt(row, col));
-                                rowData.add((String) tableModel.getValueAt(row, col + 1));
-                                rowData.add((String) tableModel.getValueAt(row, col + 2));
-                                rowData.add((String) tableModel.getValueAt(row, col + 3));
-                                row += 1;
-                            }
-                            //removing the [] from around the file data
-                            String taskData = rowData.toString().replace("[", "").replace("]", "");
-                            writer.write(taskData);
-                            JOptionPane.showMessageDialog(inputPanel, "Task list saved");
-                        } catch (IOException ex) {
-                            JOptionPane.showMessageDialog(null, "Error saving file");
-                        }
-                    }
-                }
-            }
-
-            @Override
-            public void keyReleased(KeyEvent e) {}
-        });
+//still need to work out how to tab through the buttons in bottom panell
+//        //allows users to use the enter key instead of needing to click a button with the mouse when saving a file
+//        saveTaskFile.addKeyListener(new KeyListener() {
+//            @Override
+//            public void keyTyped(KeyEvent e) {}
+//            @Override
+//            public void keyPressed(KeyEvent e) {
+//                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+//                    JFileChooser fileChooser = new JFileChooser();
+//                    int choice = fileChooser.showSaveDialog(null);
+//                    if(choice == JFileChooser.APPROVE_OPTION) {
+//                        File file = fileChooser.getSelectedFile();
+//                        String filePath = file.getAbsolutePath();
+//                        try(BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
+//                            int row = 0;
+//                            int col = 0;
+//                            //collecting data from the task table and storing it in the txt file
+//                            while (row < tableModel.getRowCount()) {
+//                                rowData.add((String) tableModel.getValueAt(row, col));
+//                                rowData.add((String) tableModel.getValueAt(row, col + 1));
+//                                rowData.add((String) tableModel.getValueAt(row, col + 2));
+//                                rowData.add((String) tableModel.getValueAt(row, col + 3));
+//                                row += 1;
+//                            }
+//                            //removing the [] from around the file data
+//                            String taskData = rowData.toString().replace("[", "").replace("]", "");
+//                            writer.write(taskData);
+//                            JOptionPane.showMessageDialog(inputPanel, "Task list saved");
+//                        } catch (IOException ex) {
+//                            JOptionPane.showMessageDialog(null, "Error saving file");
+//                        }
+//                    }
+//                }
+//            }
+//
+//            @Override
+//            public void keyReleased(KeyEvent e) {}
+//        });
 
         //loading a specific file to the text area using the load button
         loadTaskFile.addActionListener(_ -> {
@@ -177,173 +177,199 @@ public class TaskManager extends JSplitPane {
             }
         });
 
-        //allows users to use the enter key instead of needing to click a button with the mouse when loading a file
-        loadTaskFile.addKeyListener(new KeyListener() {
-            @Override
-            public void keyTyped(KeyEvent e) {}
-            @Override
-            public void keyPressed(KeyEvent e) {
-                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-                    JFileChooser fileChooser = new JFileChooser();
-                    int choice = fileChooser.showOpenDialog(table);
-                    if(choice == JFileChooser.APPROVE_OPTION) {
-                        File file = fileChooser.getSelectedFile();
-                        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
-                            String text = reader.readLine();
-                            String[] taskList = text.split(",");
-                    /*loops over the list of data, stored in the taskList array, from the txt file
-                    and stores each set of data for a task into a new array, then uses this data to populate the table*/
-                            for(int i = 0; i < taskList.length; i += 4) {
-                                Object[] data = new Object[4];
-                                data[0] = taskList[i];
-                                data[1] = taskList[i + 1];
-                                data[2] = taskList[i + 2];
-                                data[3] = taskList[i + 3];
-                                tableModel.addRow(data);
-                            }
-                            JOptionPane.showMessageDialog(inputPanel, "Task list loaded");
-                        } catch (IOException ex) {
-                            JOptionPane.showMessageDialog(null, "Error loading file");
-                        }
-                    }
-                }
-            }
-            @Override
-            public void keyReleased(KeyEvent e) {}
-        });
+//        //allows users to use the enter key instead of needing to click a button with the mouse when loading a file
+//        loadTaskFile.addKeyListener(new KeyListener() {
+//            @Override
+//            public void keyTyped(KeyEvent e) {}
+//            @Override
+//            public void keyPressed(KeyEvent e) {
+//                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+//                    JFileChooser fileChooser = new JFileChooser();
+//                    int choice = fileChooser.showOpenDialog(table);
+//                    if(choice == JFileChooser.APPROVE_OPTION) {
+//                        File file = fileChooser.getSelectedFile();
+//                        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+//                            String text = reader.readLine();
+//                            String[] taskList = text.split(",");
+//                    /*loops over the list of data, stored in the taskList array, from the txt file
+//                    and stores each set of data for a task into a new array, then uses this data to populate the table*/
+//                            for(int i = 0; i < taskList.length; i += 4) {
+//                                Object[] data = new Object[4];
+//                                data[0] = taskList[i];
+//                                data[1] = taskList[i + 1];
+//                                data[2] = taskList[i + 2];
+//                                data[3] = taskList[i + 3];
+//                                tableModel.addRow(data);
+//                            }
+//                            JOptionPane.showMessageDialog(inputPanel, "Task list loaded");
+//                        } catch (IOException ex) {
+//                            JOptionPane.showMessageDialog(null, "Error loading file");
+//                        }
+//                    }
+//                }
+//            }
+//            @Override
+//            public void keyReleased(KeyEvent e) {}
+//        });
 
         //clearing all tasks from task table area
         clearButton.addActionListener(_ -> {
             //gives the JOptionPane to check if the user wants to delete the all tasks and only deletes if the "Yes" option is selected
-            int option = JOptionPane.showOptionDialog(inputPanel,
-                    "Are you sure you want to delete all tasks?",
-                    "Delete all tasks",
-                    JOptionPane.YES_NO_OPTION,
-                    JOptionPane.QUESTION_MESSAGE,
-                    null, //uses default icon
-                    options, //the names of buttons
-                    options[0]); //default button title
-            if(option == JOptionPane.YES_OPTION) {
-                while(tableModel.getRowCount() > 0) {
-                    for (int i = 0; i < tableModel.getRowCount(); i++) {
-                        rowData.remove((String) tableModel.getValueAt(i, 0));
-                        rowData.remove((String) tableModel.getValueAt(i, 1));
-                        rowData.remove((String) tableModel.getValueAt(i, 2));
-                        rowData.remove((String) tableModel.getValueAt(i, 3));
-                        tableModel.removeRow(i);
+            try {
+                int option = JOptionPane.showOptionDialog(inputPanel,
+                        "Are you sure you want to delete all tasks?",
+                        "Delete all tasks",
+                        JOptionPane.YES_NO_OPTION,
+                        JOptionPane.QUESTION_MESSAGE,
+                        null, //uses default icon
+                        options, //the names of buttons
+                        options[0]); //default button title
+                if(option == JOptionPane.YES_OPTION) {
+                    while(tableModel.getRowCount() > 0) {
+                        for (int i = 0; i < tableModel.getRowCount(); i++) {
+                            rowData.remove((String) tableModel.getValueAt(i, 0));
+                            rowData.remove((String) tableModel.getValueAt(i, 1));
+                            rowData.remove((String) tableModel.getValueAt(i, 2));
+                            rowData.remove((String) tableModel.getValueAt(i, 3));
+                            tableModel.removeRow(i);
+                        }
                     }
+                    JOptionPane.showMessageDialog(inputPanel, "All tasks cleared from the list");
+                } else if (option == JOptionPane.NO_OPTION) {
+                    JOptionPane.getRootFrame().dispose(); //disposes of the JOptionPane and does not delete all the tasks if the cancel option is selected.
                 }
-                JOptionPane.showMessageDialog(inputPanel, "All tasks cleared from the list");
-            } else if (option == JOptionPane.NO_OPTION) {
-                JOptionPane.getRootFrame().dispose(); //disposes of the JOptionPane and does not delete all the tasks if the cancel option is selected.
+            }catch (Exception ex) {
+                JOptionPane.showMessageDialog(null, "Error clearing tasks, please try again");
+                throw new RuntimeException(ex);
             }
+
         });
 
-        //allows users to use the enter key instead of needing to click a button with the mouse when using the clear all button
-        clearButton.addKeyListener(new KeyListener() {
-            @Override
-            public void keyTyped(KeyEvent e) {}
-            @Override
-            public void keyPressed(KeyEvent e) {
-                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-                    //gives the JOptionPane to check if the user wants to delete the all tasks and only deletes if the "Yes" option is selected
-                    int option = JOptionPane.showOptionDialog(inputPanel,
-                            "Are you sure you want to delete all tasks?",
-                            "Delete all tasks",
-                            JOptionPane.YES_NO_OPTION,
-                            JOptionPane.QUESTION_MESSAGE,
-                            null, //uses default icon
-                            options, //the names of buttons
-                            options[0]); //default button title
-                    if(option == JOptionPane.YES_OPTION) {
-                        while(tableModel.getRowCount() > 0) {
-                            for (int i = 0; i < tableModel.getRowCount(); i++) {
-                                rowData.remove((String) tableModel.getValueAt(i, 0));
-                                rowData.remove((String) tableModel.getValueAt(i, 1));
-                                rowData.remove((String) tableModel.getValueAt(i, 2));
-                                rowData.remove((String) tableModel.getValueAt(i, 3));
-                                tableModel.removeRow(i);
-                            }
-                        }
-                        JOptionPane.showMessageDialog(inputPanel, "All tasks cleared from the list");
-                    } else if (option == JOptionPane.NO_OPTION) {
-                        JOptionPane.getRootFrame().dispose(); //disposes of the JOptionPane and does not delete all the tasks if the cancel option is selected.
-                    }
-                }
-            }
-            @Override
-            public void keyReleased(KeyEvent e) {}
-        });
+//        //allows users to use the enter key instead of needing to click a button with the mouse when using the clear all button
+//        clearButton.addKeyListener(new KeyListener() {
+//            @Override
+//            public void keyTyped(KeyEvent e) {}
+//            @Override
+//            public void keyPressed(KeyEvent e) {
+//                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+//                    //gives the JOptionPane to check if the user wants to delete the all tasks and only deletes if the "Yes" option is selected
+//            try {
+//                int option = JOptionPane.showOptionDialog(inputPanel,
+//                        "Are you sure you want to delete all tasks?",
+//                        "Delete all tasks",
+//                        JOptionPane.YES_NO_OPTION,
+//                        JOptionPane.QUESTION_MESSAGE,
+//                        null, //uses default icon
+//                        options, //the names of buttons
+//                        options[0]); //default button title
+//                if(option == JOptionPane.YES_OPTION) {
+//                    while(tableModel.getRowCount() > 0) {
+//                        for (int i = 0; i < tableModel.getRowCount(); i++) {
+//                            rowData.remove((String) tableModel.getValueAt(i, 0));
+//                            rowData.remove((String) tableModel.getValueAt(i, 1));
+//                            rowData.remove((String) tableModel.getValueAt(i, 2));
+//                            rowData.remove((String) tableModel.getValueAt(i, 3));
+//                            tableModel.removeRow(i);
+//                        }
+//                    }
+//                    JOptionPane.showMessageDialog(inputPanel, "All tasks cleared from the list");
+//                } else if (option == JOptionPane.NO_OPTION) {
+//                    JOptionPane.getRootFrame().dispose(); //disposes of the JOptionPane and does not delete all the tasks if the cancel option is selected.
+//                }
+//            }catch (Exception ex) {
+//                JOptionPane.showMessageDialog(null, "Error clearing tasks, please try again");
+//                throw new RuntimeException(ex);
+//            }
+//                }
+//            }
+//            @Override
+//            public void keyReleased(KeyEvent e) {}
+//        });
 
         //delete selected task from the task table
         deleteTaskButton.addActionListener(_ -> {
             //gives the JOptionPane to check if the user wants to delete the task and only deletes if the "Yes" option is selected
-            int option = JOptionPane.showOptionDialog(inputPanel,
-                    "Are you sure you want to delete this task?",
-                    "Delete task",
-                    JOptionPane.YES_NO_OPTION,
-                    JOptionPane.QUESTION_MESSAGE,
-                    null, //uses default icon
-                    options, //the names of buttons
-                    options[0]); //default button title
-            if(option == JOptionPane.YES_OPTION) {
-                tableModel.removeRow(table.getSelectedRow());
-                JOptionPane.showMessageDialog(inputPanel, "Task deleted from the list");
-            } else if (option == JOptionPane.NO_OPTION) {
-                JOptionPane.getRootFrame().dispose(); //disposes of the JOptionPane and does not delete the selected task if the cancel option is selected.
-            }
-
-        });
-
-        //allows users to use the enter key instead of needing to click a button with the mouse when using the delete task button
-        deleteTaskButton.addKeyListener(new KeyListener() {
-            @Override
-            public void keyTyped(KeyEvent e) {}
-            @Override
-            public void keyPressed(KeyEvent e) {
-                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-                    //gives the JOptionPane to check if the user wants to delete the task and only deletes if the "Yes" option is selected
-                    int option = JOptionPane.showOptionDialog(inputPanel,
-                            "Are you sure you want to delete this task?",
-                            "Delete task",
-                            JOptionPane.YES_NO_OPTION,
-                            JOptionPane.QUESTION_MESSAGE,
-                            null, //uses default icon
-                            options, //the names of buttons
-                            options[0]); //default button title
-                    if(option == JOptionPane.YES_OPTION) {
-                        tableModel.removeRow(table.getSelectedRow());
-                        JOptionPane.showMessageDialog(inputPanel, "Task deleted from the list");
-                    } else if (option == JOptionPane.NO_OPTION) {
-                        JOptionPane.getRootFrame().dispose(); //disposes of the JOptionPane and does not delete the selected task if the cancel option is selected.
-                    }
+            try {
+                int option = JOptionPane.showOptionDialog(inputPanel,
+                        "Are you sure you want to delete this task?",
+                        "Delete task",
+                        JOptionPane.YES_NO_OPTION,
+                        JOptionPane.QUESTION_MESSAGE,
+                        null, //uses default icon
+                        options, //the names of buttons
+                        options[0]); //default button title
+                if(option == JOptionPane.YES_OPTION) {
+                    tableModel.removeRow(table.getSelectedRow());
+                    JOptionPane.showMessageDialog(inputPanel, "Task deleted from the list");
+                } else if (option == JOptionPane.NO_OPTION) {
+                    JOptionPane.getRootFrame().dispose(); //disposes of the JOptionPane and does not delete the selected task if the cancel option is selected.
                 }
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, "Error deleting task, please try again");
+                throw new RuntimeException(e);
             }
-            @Override
-            public void keyReleased(KeyEvent e) {}
         });
+
+//        //allows users to use the enter key instead of needing to click a button with the mouse when using the delete task button
+//        deleteTaskButton.addKeyListener(new KeyListener() {
+//            @Override
+//            public void keyTyped(KeyEvent e) {}
+//            @Override
+//            public void keyPressed(KeyEvent e) {
+//                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+//                    //gives the JOptionPane to check if the user wants to delete the task and only deletes if the "Yes" option is selected
+//            try {
+//                int option = JOptionPane.showOptionDialog(inputPanel,
+//                        "Are you sure you want to delete this task?",
+//                        "Delete task",
+//                        JOptionPane.YES_NO_OPTION,
+//                        JOptionPane.QUESTION_MESSAGE,
+//                        null, //uses default icon
+//                        options, //the names of buttons
+//                        options[0]); //default button title
+//                if(option == JOptionPane.YES_OPTION) {
+//                    tableModel.removeRow(table.getSelectedRow());
+//                    JOptionPane.showMessageDialog(inputPanel, "Task deleted from the list");
+//                } else if (option == JOptionPane.NO_OPTION) {
+//                    JOptionPane.getRootFrame().dispose(); //disposes of the JOptionPane and does not delete the selected task if the cancel option is selected.
+//                }
+//            } catch (Exception e) {
+//                JOptionPane.showMessageDialog(null, "Error deleting task, please try again");
+//                throw new RuntimeException(e);
+//            }
+//                }
+//            }
+//            @Override
+//            public void keyReleased(KeyEvent e) {}
+//        });
 
         //changes the complete task column to true for the specified row
         completedTaskButton.addActionListener(_ -> {
-            task.setStatus("YES");
-            tableModel.setValueAt(task.getStatus(), table.getSelectedRow(), 3);
-
-            JOptionPane.showMessageDialog(inputPanel, "Task marked as completed");
-        });
-
-        //allows users to use the enter key instead of needing to click a button with the mouse when using the complete task button
-        completedTaskButton.addKeyListener(new KeyListener() {
-            @Override
-            public void keyTyped(KeyEvent e) {}
-            @Override
-            public void keyPressed(KeyEvent e) {
+            try {
                 task.setStatus("YES");
                 tableModel.setValueAt(task.getStatus(), table.getSelectedRow(), 3);
 
                 JOptionPane.showMessageDialog(inputPanel, "Task marked as completed");
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, "Error completing task, please try again");
+                throw new RuntimeException(e);
             }
-            @Override
-            public void keyReleased(KeyEvent e) {}
+
         });
+
+//        //allows users to use the enter key instead of needing to click a button with the mouse when using the complete task button
+//        completedTaskButton.addKeyListener(new KeyListener() {
+//            @Override
+//            public void keyTyped(KeyEvent e) {}
+//            @Override
+//            public void keyPressed(KeyEvent e) {
+//                task.setStatus("YES");
+//                tableModel.setValueAt(task.getStatus(), table.getSelectedRow(), 3);
+//
+//                JOptionPane.showMessageDialog(inputPanel, "Task marked as completed");
+//            }
+//            @Override
+//            public void keyReleased(KeyEvent e) {}
+//        });
     }
 }

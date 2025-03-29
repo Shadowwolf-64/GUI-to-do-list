@@ -107,8 +107,9 @@ public class InitGUI extends JFrame {
         rightPanel.add(inputPanel);
         taskPanel.add(tasksScrollPane);
         taskPanel.add(bottomPanel);
+        leftPanel.setBackground(veryLightGray);
         taskPanel.setBackground(veryLightGray);
-        inputPanel.setBackground(veryLightGray);
+        inputPanel.setBackground(Color.white);
 
         //organising the layout of the components in the input panel
         GridBagLayout layout = new GridBagLayout();
