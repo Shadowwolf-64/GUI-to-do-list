@@ -4,17 +4,19 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.event.ActionListener;
 import java.io.*;
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.util.ArrayList;
-
+import java.util.Date;
 
 public class TaskManager extends JSplitPane {
 
     public void taskManager(JButton saveTaskFile, JButton loadTaskFile, JButton clearButton,
                             JButton addTaskButton, DefaultTableModel tableModel,
                             ArrayList<String> rowData, JPanel inputPanel, JTable table,
-                            JTextField taskInputField, JFormattedTextField dateInputField,
+                            JTextField taskInputField, JFormattedTextField dateInputField, DateFormat dateFormat,
                             JButton deleteTaskButton, JButton completedTaskButton, JComboBox<String> priorityInputField,
-                            JLabel confirmation, JLabel errorLabel) {
+                            JLabel confirmation, JLabel errorLabel, JLabel dateErrorLabel) {
         Task task = new Task();
         Object[] options = {"Yes", "Cancel"}; //labels used for the names on JOptionPane buttons
         //saving task list from text area to a file using the save button
@@ -24,22 +26,20 @@ public class TaskManager extends JSplitPane {
             if(choice == JFileChooser.APPROVE_OPTION) {
                 File file = fileChooser.getSelectedFile();
                 String filePath = file.getAbsolutePath();
-                //checking that the file extension is a txt extension
-                if(!filePath.endsWith(".txt")) {
-                    file = new File(filePath + ".txt");
-                }
-                try(BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
+                try(BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
                     int row = 0;
                     int col = 0;
                     //collecting data from the task table and storing it in the txt file
                     while (row < tableModel.getRowCount()) {
-                        rowData.add(tableModel.getValueAt(row, col).toString());
-                        rowData.add(tableModel.getValueAt(row, col + 1).toString());
-                        rowData.add(tableModel.getValueAt(row, col + 2).toString());
-                        rowData.add(tableModel.getValueAt(row, col + 3).toString());
+                        rowData.add((String) tableModel.getValueAt(row, col));
+                        rowData.add((String) tableModel.getValueAt(row, col + 1));
+                        rowData.add((String) tableModel.getValueAt(row, col + 2));
+                        rowData.add((String) tableModel.getValueAt(row, col + 3));
                         row += 1;
                     }
-                    writer.write(rowData.toString());
+                    //removing the [] from around the file data
+                    String taskData = rowData.toString().replace("[", "").replace("]", "");
+                    writer.write(taskData);
                     JOptionPane.showMessageDialog(inputPanel, "Task list saved");
                 } catch (IOException ex) {
                     JOptionPane.showMessageDialog(null, "Error saving file");
@@ -64,7 +64,6 @@ public class TaskManager extends JSplitPane {
                         data[1] = taskList[i + 1];
                         data[2] = taskList[i + 2];
                         data[3] = taskList[i + 3];
-
                         tableModel.addRow(data);
                     }
                     JOptionPane.showMessageDialog(inputPanel, "Task list loaded");
@@ -78,8 +77,8 @@ public class TaskManager extends JSplitPane {
         clearButton.addActionListener(_ -> {
             //gives the JOptionPane to check if the user wants to delete the all tasks and only deletes if the "Yes" option is selected
             int option = JOptionPane.showOptionDialog(inputPanel,
-                    "Are you sure you want to delete this task?",
-                    "Delete task",
+                    "Are you sure you want to delete all tasks?",
+                    "Delete all tasks",
                     JOptionPane.YES_NO_OPTION,
                     JOptionPane.QUESTION_MESSAGE,
                     null, //uses default icon
@@ -88,6 +87,10 @@ public class TaskManager extends JSplitPane {
             if(option == JOptionPane.YES_OPTION) {
                 while(tableModel.getRowCount() > 0) {
                     for (int i = 0; i < tableModel.getRowCount(); i++) {
+                        rowData.remove((String) tableModel.getValueAt(i, 0));
+                        rowData.remove((String) tableModel.getValueAt(i, 1));
+                        rowData.remove((String) tableModel.getValueAt(i, 2));
+                        rowData.remove((String) tableModel.getValueAt(i, 3));
                         tableModel.removeRow(i);
                     }
                 }
@@ -99,10 +102,25 @@ public class TaskManager extends JSplitPane {
 
         //add task to the table area
         addTaskButton.addActionListener(_ -> {
-            int delay = 3000;
+            //sets the time limit for displaying error messages when adding tasks
+            int delay = 3500;
+            //sets user input to the task object
             task.setTask(taskInputField);
             task.setDueDate(dateInputField);
             task.setStatus("NO");
+
+            //error handling of date input field for incorrect format
+            if (dateInputField.getText() != null || !dateInputField.getText().isEmpty()) {
+                try {
+                    Date parsedDate = dateFormat.parse(dateInputField.getText());
+                    dateInputField.setText(dateFormat.format(parsedDate));
+                } catch (ParseException e) {
+                    dateErrorLabel.setVisible(true);
+                    ActionListener taskPerformed = _ -> dateErrorLabel.setVisible(false);
+                    new Timer(delay, taskPerformed).start();
+                }
+            }
+
             if(taskInputField.getText().isEmpty() || dateInputField.getText().isEmpty()) {
                 errorLabel.setVisible(true);
                 ActionListener taskPerformed = _ -> errorLabel.setVisible(false);
@@ -143,6 +161,7 @@ public class TaskManager extends JSplitPane {
         completedTaskButton.addActionListener(_ -> {
             task.setStatus("YES");
             tableModel.setValueAt(task.getStatus(), table.getSelectedRow(), 3);
+
             JOptionPane.showMessageDialog(inputPanel, "Task marked as completed");
         });
     }
