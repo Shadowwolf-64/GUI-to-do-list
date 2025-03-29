@@ -239,6 +239,42 @@ public class TaskManager extends JSplitPane {
             }
         });
 
+        //allows users to use the enter key instead of needing to click a button with the mouse when using the clear all button
+        clearButton.addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {}
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    //gives the JOptionPane to check if the user wants to delete the all tasks and only deletes if the "Yes" option is selected
+                    int option = JOptionPane.showOptionDialog(inputPanel,
+                            "Are you sure you want to delete all tasks?",
+                            "Delete all tasks",
+                            JOptionPane.YES_NO_OPTION,
+                            JOptionPane.QUESTION_MESSAGE,
+                            null, //uses default icon
+                            options, //the names of buttons
+                            options[0]); //default button title
+                    if(option == JOptionPane.YES_OPTION) {
+                        while(tableModel.getRowCount() > 0) {
+                            for (int i = 0; i < tableModel.getRowCount(); i++) {
+                                rowData.remove((String) tableModel.getValueAt(i, 0));
+                                rowData.remove((String) tableModel.getValueAt(i, 1));
+                                rowData.remove((String) tableModel.getValueAt(i, 2));
+                                rowData.remove((String) tableModel.getValueAt(i, 3));
+                                tableModel.removeRow(i);
+                            }
+                        }
+                        JOptionPane.showMessageDialog(inputPanel, "All tasks cleared from the list");
+                    } else if (option == JOptionPane.NO_OPTION) {
+                        JOptionPane.getRootFrame().dispose(); //disposes of the JOptionPane and does not delete all the tasks if the cancel option is selected.
+                    }
+                }
+            }
+            @Override
+            public void keyReleased(KeyEvent e) {}
+        });
+
         //delete selected task from the task table
         deleteTaskButton.addActionListener(_ -> {
             //gives the JOptionPane to check if the user wants to delete the task and only deletes if the "Yes" option is selected
