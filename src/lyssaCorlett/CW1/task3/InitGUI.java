@@ -54,14 +54,10 @@ public class InitGUI extends JFrame {
         JLabel newTaskLabel = new JLabel("Task: ");
         JLabel newDateLabel = new JLabel("Due date: ");
         JLabel newPriorityLabel = new JLabel("Priority level: ");
-        JLabel confirmation = new JLabel("New task added to the list");
-        JLabel errorLabel = new JLabel("Please fill in all of the boxes correctly");
-        JLabel dateErrorLabel = new JLabel("Please enter a date in the format of dd/MM/yyyy");
+        JLabel feedbackLabel = new JLabel();
 
         //setting condition dependent label visibility to false
-        errorLabel.setVisible(false);
-        confirmation.setVisible(false);
-        dateErrorLabel.setVisible(false);
+        feedbackLabel.setVisible(false);
 
         //button creation
         JButton addTaskButton = new JButton("ADD TASK");
@@ -151,19 +147,7 @@ public class InitGUI extends JFrame {
         gbc.gridy = 4;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.gridwidth = 3;
-        inputPanel.add((confirmation), gbc);
-
-        gbc.gridx = 0;
-        gbc.gridy = 4;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.gridwidth = 3;
-        inputPanel.add((errorLabel), gbc);
-
-        gbc.gridx = 0;
-        gbc.gridy = 4;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.gridwidth = 3;
-        inputPanel.add((dateErrorLabel), gbc);
+        inputPanel.add((feedbackLabel), gbc);
 
         //adding buttons to correct panels
         bottomPanel.add(clearButton);
@@ -174,7 +158,7 @@ public class InitGUI extends JFrame {
 
         taskManager1.taskManager(saveTaskFile, loadTaskFile, clearButton, addTaskButton, tableModel,
                 rowData, inputPanel, table, taskInputField, dateInputField, deleteTaskButton,
-                completedTaskButton, priorityInputField, confirmation, errorLabel);
+                completedTaskButton, priorityInputField, feedbackLabel);
 
 
         setVisible(true);
